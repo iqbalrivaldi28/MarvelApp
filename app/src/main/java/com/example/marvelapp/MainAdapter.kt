@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marvelapp.data.MainModel
 
-class MainAdapter(val results: ArrayList<MainModel.Result>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(val results: ArrayList<MainModel.Result>, val listener: OnAdapterListener) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+
     class ViewHolder(val view : View): RecyclerView.ViewHolder(view){
         val textView: TextView = view.findViewById(R.id.textView)
         val imageView: ImageView = view.findViewById(R.id.imageView)
@@ -30,6 +31,11 @@ class MainAdapter(val results: ArrayList<MainModel.Result>) : RecyclerView.Adapt
             .error(R.drawable.img_placeholder)
             .centerCrop()
             .into(holder.imageView)
+
+        // Adapter Listener
+        holder.view.setOnClickListener {
+            listener.onClick(result)
+        }
     }
 
     override fun getItemCount() = results.size
@@ -38,6 +44,11 @@ class MainAdapter(val results: ArrayList<MainModel.Result>) : RecyclerView.Adapt
         results.clear()
         results.addAll(data)
         notifyDataSetChanged()
+    }
+
+    // Adapter click listener
+    interface OnAdapterListener{
+        fun onClick(results: MainModel.Result)
     }
 
 }

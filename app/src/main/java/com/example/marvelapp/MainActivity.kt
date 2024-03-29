@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -36,8 +37,14 @@ class MainActivity : AppCompatActivity() {
         getDataFromApi()
     }
 
+    // Add Mainadapater OnListener
     private fun setupRecylerView() {
-        mainAdapter = MainAdapter(arrayListOf())
+        mainAdapter = MainAdapter(arrayListOf(), object: MainAdapter.OnAdapterListener{
+            override fun onClick(results: MainModel.Result) {
+                Toast.makeText(applicationContext, results.title, Toast.LENGTH_SHORT).show()
+            }
+
+        })
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.apply{
             layoutManager = LinearLayoutManager(applicationContext)
