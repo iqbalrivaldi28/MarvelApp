@@ -1,5 +1,6 @@
 package com.example.marvelapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -41,7 +42,14 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecylerView() {
         mainAdapter = MainAdapter(arrayListOf(), object: MainAdapter.OnAdapterListener{
             override fun onClick(results: MainModel.Result) {
-                Toast.makeText(applicationContext, results.title, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, results.title, Toast.LENGTH_SHORT).show()
+
+                // To Detail Activity
+                startActivity(Intent(applicationContext, DetailActivity::class.java)
+                    .putExtra("INTENT_TITLE", results.title)
+                    .putExtra("INTENT_IMAGE", results.image)
+                )
+
             }
 
         })
