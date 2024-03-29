@@ -1,4 +1,4 @@
-package com.example.marvelapp
+package com.example.marvelapp.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.example.marvelapp.R
 import com.example.marvelapp.data.MainModel
 import com.example.marvelapp.retrofit.ApiService
 import retrofit2.Call
