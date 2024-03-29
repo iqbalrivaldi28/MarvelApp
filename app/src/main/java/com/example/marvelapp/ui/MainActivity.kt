@@ -5,10 +5,13 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marvelapp.R
@@ -25,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainAdapter: MainAdapter
     private lateinit var binding: ActivityMainBinding
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         // Rubah warna untuk app bar
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
 
+        recyclerView = binding.recyclerView // inisialisasi recyclerView
     }
 
     override fun onStart() {
@@ -59,8 +64,8 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.apply{
+
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = mainAdapter
         }
@@ -99,5 +104,25 @@ class MainActivity : AppCompatActivity() {
 //            printLog("title: ${result.title}")
 //        }
     }
+
+    // Untuk grid
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_list -> {
+                recyclerView.layoutManager = LinearLayoutManager(this)
+            }
+            R.id.action_grid -> {
+                recyclerView.layoutManager = GridLayoutManager(this, 2)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 }
