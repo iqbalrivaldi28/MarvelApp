@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marvelapp.R
 import com.example.marvelapp.data.MainModel
+import com.example.marvelapp.databinding.ActivityMainBinding
 import com.example.marvelapp.retrofit.ApiService
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,15 +21,13 @@ class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivity"
 
     private lateinit var mainAdapter: MainAdapter
-
-    private lateinit var progressBar: ProgressBar
-
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        progressBar = findViewById(R.id.progressBar)
     }
 
     override fun onStart() {
@@ -60,21 +59,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getDataFromApi(){
-        progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
         ApiService.endpoint.getData()
             .enqueue(object : Callback<MainModel>{
                 override fun onResponse(
                     call: Call<MainModel>,
                     response: Response<MainModel>
                 ) {
-                    progressBar.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     if (response.isSuccessful){
                         showData(response.body()!!)
                     }
                 }
 
                 override fun onFailure(call: Call<MainModel>, t: Throwable) {
-                    progressBar.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     printLog(t.toString())
                 }
 
