@@ -13,6 +13,8 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +22,7 @@ import com.example.marvelapp.R
 import com.example.marvelapp.data.MainModel
 import com.example.marvelapp.databinding.ActivityMainBinding
 import com.example.marvelapp.retrofit.ApiService
+import com.example.marvelapp.viewmodel.MainViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var shrimmerView: ShimmerFrameLayout
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +51,53 @@ class MainActivity : AppCompatActivity() {
         recyclerView = binding.recyclerView // inisialisasi recyclerView
         shrimmerView = binding.shrimmerView // inisialisasi shrimmer
 
-        setupRecylerView()
-        shrimmerView.startShimmer()
+        // Hubungin View Modelnya
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            getDataFromApi()
-        }, 4000)
+        setupRecylerView()
+
+//        viewModel.mainData.observe(this){
+//            showData(it)
+//        }
+
+//        viewModel.isLoading.observe(this){isLoading ->
+//            if(isLoading){
+//                shrimmerView.startShimmer()
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    shrimmerView.stopShimmer()
+//                    shrimmerView.visibility = View.GONE
+//                }, 5000)
+//            }else{
+//                shrimmerView.stopShimmer()
+//                shrimmerView.visibility = View.GONE
+//            }
+//        }
+
+        viewModel.mainData.observe(this, Observer { data ->
+            data?.let {
+                showData(data)
+            }
+        })
+
+
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            isLoading?.let {
+                if(isLoading){
+                    shrimmerView.startShimmer()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        shrimmerView.stopShimmer()
+                        shrimmerView.visibility = View.GONE
+                    }, 7000)
+                }else{
+                    shrimmerView.stopShimmer()
+                    shrimmerView.visibility = View.GONE
+                }
+            }
+        })
+
+        viewModel.init()
 
     }
-
 
     // Add Mainadapater OnListener
     private fun setupRecylerView() {
@@ -77,27 +119,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDataFromApi(){
-        ApiService.endpoint.getData()
-            .enqueue(object : Callback<MainModel>{
-                override fun onResponse(
-                    call: Call<MainModel>,
-                    response: Response<MainModel>
-                ) {
-                    shrimmerView.stopShimmer()
-                    shrimmerView.visibility = View.GONE
-                    if (response.isSuccessful){
-                        showData(response.body()!!)
-                    }
-                }
 
-                override fun onFailure(call: Call<MainModel>, t: Throwable) {
-                    shrimmerView.visibility = View.GONE
-                    printLog(t.toString())
-                }
-
-            })
-    }
 
     private fun printLog(message: String){
         Log.d(TAG, message)
@@ -106,9 +128,6 @@ class MainActivity : AppCompatActivity() {
     private fun showData(data: MainModel){
         val results = data.result
         mainAdapter.setData(results)
-//        for (result in results){
-//            printLog("title: ${result.title}")
-//        }
     }
 
     // Untuk grid
