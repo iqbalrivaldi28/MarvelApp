@@ -8,9 +8,7 @@
     android:layout_marginEnd="12dp"
     android:layout_marginTop="16dp"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="12dp"
-    android:background="@android:color/white">
+    app:cardCornerRadius="14dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,21 +20,20 @@
             android:id="@+id/imageView"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:src="@drawable/img_placeholder"
+            android:background="#dddddd"
             app:civ_border_width="2dp"
             android:layout_marginStart="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:civ_border_color="#FF000000"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Lorem Ipsum"
             android:padding="10dp"
             android:textSize="18sp"
+            android:background="#dddd"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

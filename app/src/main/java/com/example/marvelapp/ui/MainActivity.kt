@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +20,7 @@ import com.example.marvelapp.R
 import com.example.marvelapp.data.MainModel
 import com.example.marvelapp.databinding.ActivityMainBinding
 import com.example.marvelapp.retrofit.ApiService
+import com.facebook.shimmer.ShimmerFrameLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainAdapter: MainAdapter
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerView: RecyclerView
+    private lateinit var shrimmerView: ShimmerFrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +45,18 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
 
         recyclerView = binding.recyclerView // inisialisasi recyclerView
+
+        shrimmerView = binding.shrimmerView // inisialisasi shrimmer
+
     }
 
     override fun onStart() {
         super.onStart()
         setupRecylerView()
-        getDataFromApi()
+        shrimmerView.startShimmer()
+        Handler(Looper.getMainLooper()).postDelayed({
+            getDataFromApi()
+        }, 4000)
     }
 
     // Add Mainadapater OnListener
@@ -72,21 +82,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getDataFromApi(){
-        binding.progressBar.visibility = View.VISIBLE
         ApiService.endpoint.getData()
             .enqueue(object : Callback<MainModel>{
                 override fun onResponse(
                     call: Call<MainModel>,
                     response: Response<MainModel>
                 ) {
-                    binding.progressBar.visibility = View.GONE
+                    shrimmerView.stopShimmer()
+                    shrimmerView.visibility = View.GONE
                     if (response.isSuccessful){
                         showData(response.body()!!)
                     }
                 }
 
                 override fun onFailure(call: Call<MainModel>, t: Throwable) {
-                    binding.progressBar.visibility = View.GONE
+                    shrimmerView.visibility = View.GONE
                     printLog(t.toString())
                 }
 
