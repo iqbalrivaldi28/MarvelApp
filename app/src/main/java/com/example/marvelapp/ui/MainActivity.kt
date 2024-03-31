@@ -28,6 +28,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private val TAG: String = "MainActivity"
+    private var isGrideMode = false
 
     private lateinit var mainAdapter: MainAdapter
     private lateinit var binding: ActivityMainBinding
@@ -43,21 +44,18 @@ class MainActivity : AppCompatActivity() {
 
         // Rubah warna untuk app bar
         supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
-
         recyclerView = binding.recyclerView // inisialisasi recyclerView
-
         shrimmerView = binding.shrimmerView // inisialisasi shrimmer
 
-    }
-
-    override fun onStart() {
-        super.onStart()
         setupRecylerView()
         shrimmerView.startShimmer()
+
         Handler(Looper.getMainLooper()).postDelayed({
             getDataFromApi()
         }, 4000)
+
     }
+
 
     // Add Mainadapater OnListener
     private fun setupRecylerView() {
@@ -70,10 +68,8 @@ class MainActivity : AppCompatActivity() {
                     .putExtra("INTENT_TITLE", results.title)
                     .putExtra("INTENT_IMAGE", results.image)
                 )
-
             }
-
-        })
+        }, isGrideMode)
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -126,9 +122,11 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId) {
             R.id.action_list -> {
                 recyclerView.layoutManager = LinearLayoutManager(this)
+                mainAdapter.setGridMode(false)
             }
             R.id.action_grid -> {
                 recyclerView.layoutManager = GridLayoutManager(this, 2)
+               mainAdapter.setGridMode(true)
             }
         }
         return super.onOptionsItemSelected(item)

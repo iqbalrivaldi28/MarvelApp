@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.marvelapp.R
 import com.example.marvelapp.data.MainModel
 
-class MainAdapter(val results: ArrayList<MainModel.Result>, val listener: OnAdapterListener) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(val results: ArrayList<MainModel.Result>, val listener: OnAdapterListener, private var isGridMode: Boolean) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     class ViewHolder(val view : View): RecyclerView.ViewHolder(view){
         val textView: TextView = view.findViewById(R.id.textView)
@@ -36,6 +36,15 @@ class MainAdapter(val results: ArrayList<MainModel.Result>, val listener: OnAdap
         holder.view.setOnClickListener {
             listener.onClick(result)
         }
+
+        // atur grig layout text view
+        if (isGridMode) {
+            holder.textView.visibility = View.GONE
+        } else {
+            holder.textView.visibility = View.VISIBLE
+            holder.textView.text = result.title
+        }
+
     }
 
     override fun getItemCount() = results.size
@@ -49,6 +58,11 @@ class MainAdapter(val results: ArrayList<MainModel.Result>, val listener: OnAdap
     // Adapter click listener
     interface OnAdapterListener{
         fun onClick(results: MainModel.Result)
+    }
+
+    fun setGridMode(isGridMode: Boolean){
+        this.isGridMode = isGridMode
+        notifyDataSetChanged()
     }
 
 }
